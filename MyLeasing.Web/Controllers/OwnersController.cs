@@ -11,6 +11,8 @@ namespace MyLeasing.Web.Controllers
     {
         readonly IOwnerRepository _ownerRepository;
         readonly IUserHelper _userHelper;
+
+        // Temporary for checks before login is implemented
         readonly string _defaultUserEmail = "dario@e.mail";
 
         public OwnersController(IOwnerRepository ownerRepository, IUserHelper userHelper)
