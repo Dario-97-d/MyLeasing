@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyLeasing.Web.Data;
+using MyLeasing.Web.Data.Repository;
 
 namespace MyLeasing.Web
 {
@@ -24,6 +25,7 @@ namespace MyLeasing.Web
                 cfg => cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<SeedDb>();
+            services.AddScoped<IOwnerRepository, OwnerRepository>();
 
             services.AddControllersWithViews();
         }
