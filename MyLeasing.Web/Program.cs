@@ -1,11 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MyLeasing.Web.Data;
 
 namespace MyLeasing.Web
 {
@@ -13,7 +9,9 @@ namespace MyLeasing.Web
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var buildHost = CreateHostBuilder(args).Build();
+            RunDbSeeding(buildHost);
+            buildHost.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,5 +20,16 @@ namespace MyLeasing.Web
                 {
                     webBuilder.UseStartup<Startup>();
                 });
+
+        static void RunDbSeeding(IHost host)
+        {
+            var scopeFactory = host.Services.GetService<IServiceScopeFactory>();
+
+            using var scope = scopeFactory.CreateScope();
+
+            var seeder = scope.ServiceProvider.GetService<SeedDb>();
+
+            seeder.SeedAsync().Wait();
+        }
     }
 }
