@@ -35,5 +35,7 @@ namespace MyLeasing.Web.Data.Entities
 
         [MaxLength(63)]
         public string Address { get; set; }
+
+        public User User { get; set; }
     }
 }

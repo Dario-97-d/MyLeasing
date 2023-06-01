@@ -1,19 +1,22 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Data.Repository;
+using MyLeasing.Web.Helpers;
 
 namespace MyLeasing.Web.Controllers
 {
     public class OwnersController : Controller
     {
         readonly IOwnerRepository _ownerRepository;
+        readonly IUserHelper _userHelper;
+        readonly string _defaultUserEmail = "dario@e.mail";
 
-        public OwnersController(IOwnerRepository ownerRepository)
+        public OwnersController(IOwnerRepository ownerRepository, IUserHelper userHelper)
         {
             _ownerRepository = ownerRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Owners
@@ -54,6 +57,8 @@ namespace MyLeasing.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
+                owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
                 await _ownerRepository.CreateAsync(owner);
                 return RedirectToAction(nameof(Index));
             }
@@ -92,6 +97,7 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
+                    owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
                     await _ownerRepository.UpdateAsync(owner);
                 }
                 catch (DbUpdateConcurrencyException)

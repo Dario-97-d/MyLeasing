@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using MyLeasing.Web.Data.Entities;
+﻿using MyLeasing.Web.Data.Entities;
 
 namespace MyLeasing.Web.Data.Repository
 {
