@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web.Data.Entities
 {
     public class Owner : IEntity
     {
         public int Id { get; set; }
-        
+
         [Required]
         [MaxLength(15)]
         [DisplayName("Document*")]
@@ -37,5 +38,27 @@ namespace MyLeasing.Web.Data.Entities
         public string Address { get; set; }
 
         public User User { get; set; }
+
+        public string PhotoFullPath =>
+            string.IsNullOrEmpty(PhotoUrl) ? null : "https://localhost:44376/" + PhotoUrl;
+
+        public string PhotoUrl { get; set; }
+
+
+        public static OwnerViewModel ToOwnerViewModel(Owner owner)
+        {
+            return new()
+            {
+                Id = owner.Id,
+                Document = owner.Document,
+                FirstName = owner.FirstName,
+                LastName = owner.LastName,
+                FixedPhone = owner.FixedPhone,
+                CellPhone = owner.CellPhone,
+                Address = owner.Address,
+                User = owner.User,
+                PhotoUrl = owner.PhotoUrl
+            };
+        }
     }
 }

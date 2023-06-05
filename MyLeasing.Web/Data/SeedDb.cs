@@ -82,6 +82,7 @@ namespace MyLeasing.Web.Data
                     Document = docs[i],
                     FirstName = firstNames[i],
                     LastName = lastNames[i],
+                    PhotoUrl = string.Empty,
                     FixedPhone = fixedPhone,
                     CellPhone = cellPhone,
                     Address = address,

@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Data.Repository;
 using MyLeasing.Web.Helpers;
+using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web.Controllers
 {
@@ -55,16 +58,23 @@ namespace MyLeasing.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Owner owner)
+        public async Task<IActionResult> Create(OwnerViewModel ownerViewModel)
         {
             if (ModelState.IsValid)
             {
+                var path = await SavePhotoFileAsync(ownerViewModel);
+
+                var owner = OwnerViewModel.ToOwner(ownerViewModel);
+                owner.PhotoUrl = path;
+
                 // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
                 owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
+
                 await _ownerRepository.CreateAsync(owner);
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(ownerViewModel);
         }
 
         // GET: Owners/Edit/5
@@ -80,7 +90,10 @@ namespace MyLeasing.Web.Controllers
             {
                 return NotFound();
             }
-            return View(owner);
+
+            var ownerViewModel = Owner.ToOwnerViewModel(owner);
+
+            return View(ownerViewModel);
         }
 
         // POST: Owners/Edit/5
@@ -88,23 +101,25 @@ namespace MyLeasing.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Owner owner)
+        public async Task<IActionResult> Edit(OwnerViewModel ownerViewModel)
         {
-            if (id != owner.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var path = await SavePhotoFileAsync(ownerViewModel);
+
+                    var owner = OwnerViewModel.ToOwner(ownerViewModel);
+                    owner.PhotoUrl = path;
+
+                    // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
                     owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
+
                     await _ownerRepository.UpdateAsync(owner);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await OwnerExists(owner))
+                    if (!await OwnerExists(ownerViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -115,7 +130,7 @@ namespace MyLeasing.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(owner);
+            return View(ownerViewModel);
         }
 
         // GET: Owners/Delete/5
@@ -145,9 +160,31 @@ namespace MyLeasing.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<bool> OwnerExists(Owner owner)
+        private async Task<bool> OwnerExists(int id)
         {
-            return await _ownerRepository.ExistsAsync(owner);
+            return await _ownerRepository.ExistsAsync(id);
+        }
+
+        static async Task<string> SavePhotoFileAsync(OwnerViewModel ownerViewModel)
+        {
+            if (ownerViewModel.PhotoFile == null || ownerViewModel.PhotoFile.Length < 1)
+                return string.Empty;
+
+            var guid = Guid.NewGuid().ToString();
+            var file = guid + ".jpg";
+
+            var path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot\\images\\owners",
+                file
+                );
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await ownerViewModel.PhotoFile.CopyToAsync(stream);
+            }
+
+            return "~/images/owners/" + file;
         }
     }
 }

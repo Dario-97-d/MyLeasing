@@ -27,9 +27,9 @@ namespace MyLeasing.Web.Data.Repository
             await SaveAllAsync();
         }
 
-        public async Task<bool> ExistsAsync(T entity)
+        public async Task<bool> ExistsAsync(int id)
         {
-            return await _context.Set<T>().AnyAsync(e => e == entity);
+            return await _context.Set<T>().AnyAsync(e => e.Id == id);
         }
 
         public IQueryable<T> GetAll()

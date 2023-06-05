@@ -7,7 +7,7 @@ namespace MyLeasing.Web.Data.Repository
     {
         Task CreateAsync(T entity);
         Task DeleteAsync(T entity);
-        Task<bool> ExistsAsync(T entity);
+        Task<bool> ExistsAsync(int id);
         IQueryable<T> GetAll();
         Task<T> GetByIdAsync(int id);
         Task<bool> SaveAllAsync();
