@@ -1,0 +1,65 @@
+﻿@model MyLeasing.Web.Data.Entities.Lessee
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Lessee</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="row">
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Document)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Document)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.FirstName)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.LastName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.LastName)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.FixedPhone)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.FixedPhone)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.CellPhone)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.CellPhone)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Address)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Address)
+                </dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.PhotoUrl))
+            {
+                <img src="@Url.Content(Model.PhotoUrl)" style="max-width:256px;max-height:256px;">
+            }
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

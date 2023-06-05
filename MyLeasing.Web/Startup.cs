@@ -39,7 +39,10 @@ namespace MyLeasing.Web
                 cfg => cfg.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<SeedDb>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<ILesseeRepository, LesseeRepository>();
             services.AddScoped<IOwnerRepository, OwnerRepository>();
 
             services.AddControllersWithViews();

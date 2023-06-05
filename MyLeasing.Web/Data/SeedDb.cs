@@ -10,8 +10,10 @@ namespace MyLeasing.Web.Data
     {
         readonly DataContext _context;
         readonly IUserHelper _userHelper;
+
         readonly string _defaultUserEmail = "dario@e.mail";
         User _defaultUser;
+
 
         public SeedDb(DataContext context, IUserHelper userHelper)
         {
@@ -30,8 +32,8 @@ namespace MyLeasing.Web.Data
             // Ensure Database is Created
             await _context.Database.EnsureCreatedAsync();
 
-            // Seed
-            changes = await SeedUser() | SeedOwners();
+            // Seed Entity for which there ain't any registries
+            changes = await SeedUser() | SeedOwners() | SeedLessees();
 
             // Save changes to database, if there are any
             if (changes) await _context.SaveChangesAsync();
@@ -49,6 +51,39 @@ namespace MyLeasing.Web.Data
                 LastName = "Dias",
                 Address = "Rua das Casas"
             };
+        }
+
+        Lessee[] DefineFiveLessees()
+        {
+            Lessee[] lessees = new Lessee[5];
+
+            string[] docs = { "12345", "23456", "34567", "45678", "56789" };
+
+            string[] firstNames = { "Kelvin", "Laney", "Matt", "Neal", "Oliver" };
+            string[] lastNames = { "Klein", "Staley", "Hers", "Bill", "Tsubasa" };
+
+            string fixedPhone = "0022446688";
+            string cellPhone = "123456789";
+            string address = "Avenida das Mansões";
+
+            _defaultUser ??= DefineDefaultUser();
+
+            for (int i = 0; i< 5; i++)
+            {
+                lessees[i] = new Lessee()
+                {
+                    Document = docs[i],
+                    FirstName = firstNames[i],
+                    LastName = lastNames[i],
+                    PhotoUrl = string.Empty,
+                    FixedPhone = fixedPhone,
+                    CellPhone = cellPhone,
+                    Address = address,
+                    User = _defaultUser
+                };
+            }
+
+            return lessees;
         }
 
         /// <summary>
@@ -91,6 +126,19 @@ namespace MyLeasing.Web.Data
             }
 
             return owners;
+        }
+
+        bool SeedLessees()
+        {
+            // Seed only if there aren't any Lessees yet
+            if (_context.Lessees.Any())
+                return false;
+
+            // Define and add lessees
+            Lessee[] lessees = DefineFiveLessees();
+            _context.Lessees.AddRange(lessees);
+
+            return true;
         }
 
         /// <summary>
