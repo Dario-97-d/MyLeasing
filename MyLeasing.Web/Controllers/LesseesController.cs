@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +12,22 @@ namespace MyLeasing.Web.Controllers
 {
     public class LesseesController : Controller
     {
-        private readonly ILesseeRepository _lesseeRepository;
+        // Repository
+        readonly ILesseeRepository _lesseeRepository;
+
+        // Helpers
+
+        readonly IBlobHelper _blobHelper;
         readonly IConverterHelper _converterHelper;
-        readonly IImageHelper _imageHelper;
         readonly IUserHelper _userHelper;
 
         public LesseesController(ILesseeRepository lesseeRepository,
-            IConverterHelper converterHelper, IImageHelper imageHelper, IUserHelper userHelper)
+            IBlobHelper blobHelper, IConverterHelper converterHelper, IUserHelper userHelper)
         {
             _lesseeRepository = lesseeRepository;
+
+            _blobHelper = blobHelper;
             _converterHelper = converterHelper;
-            _imageHelper = imageHelper;
             _userHelper = userHelper;
         }
 
@@ -35,15 +41,12 @@ namespace MyLeasing.Web.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var lessee = await _lesseeRepository.GetByIdAsync(id.Value);
+
             if (lessee == null)
-            {
                 return NotFound();
-            }
 
             return View(lessee);
         }
@@ -102,12 +105,12 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    var photoUrl = lesseeViewModel.PhotoUrl;
+                    var photoUrl = lesseeViewModel.PhotoId;
 
                     var lessee = await PrepareForCreateOrEdit(lesseeViewModel);
 
-                    if (string.IsNullOrEmpty(lessee.PhotoUrl))
-                        lessee.PhotoUrl = photoUrl;
+                    if (lessee.PhotoId == Guid.Empty)
+                        lessee.PhotoId = photoUrl;
 
                     await _lesseeRepository.UpdateAsync(lessee);
                 }
@@ -162,23 +165,24 @@ namespace MyLeasing.Web.Controllers
 
         async Task<Lessee> PrepareForCreateOrEdit(LesseeViewModel lesseeViewModel)
         {
-            var photoUrl = await SaveImageFileAsync(lesseeViewModel.PhotoFile);
+            Guid photoId = await SavePhotoFileAsync(lesseeViewModel.PhotoFile);
+
             // TODO: Update user -> logged user
             var user = await _userHelper.GetUserByEmailAsync("dario@e.mail");
 
             return new Lessee(lesseeViewModel)
             {
-                PhotoUrl = photoUrl,
+                PhotoId = photoId,
                 User = user
             };
         }
 
-        async Task<string> SaveImageFileAsync(IFormFile imageFile)
+        async Task<Guid> SavePhotoFileAsync(IFormFile imageFile)
         {
             if (imageFile == null || imageFile.Length < 1)
-                return string.Empty;
+                return Guid.Empty;
 
-            return await _imageHelper.UploadImageAsync(imageFile, "lessees");
+            return await _blobHelper.UploadBlobAsync(imageFile, "lessees");
         }
     }
 }

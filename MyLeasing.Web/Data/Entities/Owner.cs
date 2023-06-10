@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using MyLeasing.Web.Models;
 
@@ -39,10 +40,11 @@ namespace MyLeasing.Web.Data.Entities
 
         public User User { get; set; }
 
-        public string PhotoFullPath =>
-            string.IsNullOrEmpty(PhotoUrl) ? null : "https://localhost:44376/" + PhotoUrl;
+        public string PhotoFullPath => PhotoId == Guid.Empty ?
+            "https://myleasing.azurewebsites.net/images/no_image_icon.png" :
+            "https://myleasingdariostorage.blob.core.windows.net/owners/" + PhotoId;
 
-        public string PhotoUrl { get; set; }
+        public Guid PhotoId { get; set; }
 
 
         public static OwnerViewModel ToOwnerViewModel(Owner owner)
@@ -57,7 +59,7 @@ namespace MyLeasing.Web.Data.Entities
                 CellPhone = owner.CellPhone,
                 Address = owner.Address,
                 User = owner.User,
-                PhotoUrl = owner.PhotoUrl
+                PhotoId = owner.PhotoId
             };
         }
     }

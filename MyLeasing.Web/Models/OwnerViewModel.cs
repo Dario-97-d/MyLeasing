@@ -21,7 +21,7 @@ namespace MyLeasing.Web.Models
                 CellPhone = ovm.CellPhone,
                 Address = ovm.Address,
                 User = ovm.User,
-                PhotoUrl = ovm.PhotoUrl
+                PhotoId = ovm.PhotoId
             };
         }
     }

@@ -5,6 +5,9 @@ namespace MyLeasing.Web.Data.Entities
 {
     public class User : IdentityUser
     {
+        // Temporary, before login is implemented
+        public static string DefaultEmail => "dario@e.mail";
+
         [Display(Name = "Document")]
         [MaxLength(20, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
@@ -31,5 +34,6 @@ namespace MyLeasing.Web.Data.Entities
 
 
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
+
     }
 }

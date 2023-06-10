@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web.Data.Entities
@@ -32,9 +33,6 @@ namespace MyLeasing.Web.Data.Entities
         public string FullNameWithDocument => $"{FirstName} {LastName} - {Document}";
 
 
-        public string PhotoUrl { get; set; }
-
-
         [Display(Name = "Fixed Phone")]
         [MaxLength(15, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public string FixedPhone { get; set; }
@@ -52,9 +50,15 @@ namespace MyLeasing.Web.Data.Entities
         public User User { get; set; }
 
 
+        public Guid PhotoId { get; set; }
+
+        public string PhotoFullPath => PhotoId == Guid.Empty ?
+            "https://myleasing.azurewebsites.net/images/no_image_icon.png" :
+            "https://myleasingdariostorage.blob.core.windows.net/lessees/" + PhotoId;
+
+
         public Lessee()
         {
-            
         }
 
         public Lessee(LesseeViewModel lvm)
@@ -63,7 +67,7 @@ namespace MyLeasing.Web.Data.Entities
             Document = lvm.Document;
             FirstName = lvm.FirstName;
             LastName = lvm.LastName;
-            PhotoUrl = lvm.PhotoUrl;
+            PhotoId = lvm.PhotoId;
             FixedPhone = lvm.FixedPhone;
             CellPhone = lvm.CellPhone;
             Address = lvm.Address;

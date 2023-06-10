@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data.Entities;
@@ -12,15 +12,23 @@ namespace MyLeasing.Web.Controllers
 {
     public class OwnersController : Controller
     {
+        // Repository
         readonly IOwnerRepository _ownerRepository;
+
+        // Helpers
+
+        readonly IBlobHelper _blobHelper;
         readonly IUserHelper _userHelper;
 
         // Temporary for checks before login is implemented
-        readonly string _defaultUserEmail = "dario@e.mail";
+        readonly string _defaultUserEmail = Data.Entities.User.DefaultEmail;
 
-        public OwnersController(IOwnerRepository ownerRepository, IUserHelper userHelper)
+        public OwnersController(IOwnerRepository ownerRepository,
+            IBlobHelper blobHelper, IUserHelper userHelper)
         {
             _ownerRepository = ownerRepository;
+
+            _blobHelper = blobHelper;
             _userHelper = userHelper;
         }
 
@@ -62,12 +70,12 @@ namespace MyLeasing.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var path = await SavePhotoFileAsync(ownerViewModel);
+                Guid guid = await SavePhotoFileAsync(ownerViewModel.PhotoFile);
 
                 var owner = OwnerViewModel.ToOwner(ownerViewModel);
-                owner.PhotoUrl = path;
+                owner.PhotoId = guid;
 
-                // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
+                // TODO: Change to logged in User, when User login is implemented
                 owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
 
                 await _ownerRepository.CreateAsync(owner);
@@ -107,10 +115,10 @@ namespace MyLeasing.Web.Controllers
             {
                 try
                 {
-                    var path = await SavePhotoFileAsync(ownerViewModel);
+                    Guid guid = await SavePhotoFileAsync(ownerViewModel.PhotoFile);
 
                     var owner = OwnerViewModel.ToOwner(ownerViewModel);
-                    owner.PhotoUrl = path;
+                    owner.PhotoId = guid;
 
                     // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
                     owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
@@ -165,26 +173,12 @@ namespace MyLeasing.Web.Controllers
             return await _ownerRepository.ExistsAsync(id);
         }
 
-        static async Task<string> SavePhotoFileAsync(OwnerViewModel ownerViewModel)
+        async Task<Guid> SavePhotoFileAsync(IFormFile photoFile)
         {
-            if (ownerViewModel.PhotoFile == null || ownerViewModel.PhotoFile.Length < 1)
-                return string.Empty;
+            if (photoFile == null || photoFile.Length < 1)
+                return Guid.Empty;
 
-            var guid = Guid.NewGuid().ToString();
-            var file = guid + ".jpg";
-
-            var path = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "wwwroot\\images\\owners",
-                file
-                );
-
-            using (var stream = new FileStream(path, FileMode.Create))
-            {
-                await ownerViewModel.PhotoFile.CopyToAsync(stream);
-            }
-
-            return "~/images/owners/" + file;
+            return await _blobHelper.UploadBlobAsync(photoFile, "owners");
         }
     }
 }
