@@ -16,6 +16,7 @@ namespace MyLeasing.Web.Helpers
             _userManager = userManager;
         }
 
+
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
             return await _userManager.CreateAsync(user, password);
@@ -39,6 +40,19 @@ namespace MyLeasing.Web.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+        public async Task<IdentityResult> RegisterNewUser(RegisterNewUserViewModel model)
+        {
+            var user = new User
+            {
+                UserName = model.Username,
+                Email = model.Username,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+
+            return await AddUserAsync(user, model.Password);
         }
     }
 }

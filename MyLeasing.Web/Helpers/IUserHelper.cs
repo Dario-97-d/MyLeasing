@@ -11,5 +11,6 @@ namespace MyLeasing.Web.Helpers
         Task<User> GetUserByEmailAsync(string email);
         Task<SignInResult> LoginAsync(LoginViewModel model);
         Task LogoutAsync();
+        Task<IdentityResult> RegisterNewUser(RegisterNewUserViewModel model);
     }
 }
