@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,11 +33,13 @@ namespace MyLeasing.Web.Controllers
             _userHelper = userHelper;
         }
 
+
         // GET: Owners
         public IActionResult Index()
         {
             return View(_ownerRepository.GetAll());
         }
+
 
         // GET: Owners/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -55,15 +58,19 @@ namespace MyLeasing.Web.Controllers
             return View(owner);
         }
 
+
         // GET: Owners/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
+
         // POST: Owners/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OwnerViewModel ownerViewModel)
@@ -85,7 +92,9 @@ namespace MyLeasing.Web.Controllers
             return View(ownerViewModel);
         }
 
+
         // GET: Owners/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -104,9 +113,11 @@ namespace MyLeasing.Web.Controllers
             return View(ownerViewModel);
         }
 
+        
         // POST: Owners/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(OwnerViewModel ownerViewModel)
@@ -141,7 +152,9 @@ namespace MyLeasing.Web.Controllers
             return View(ownerViewModel);
         }
 
+
         // GET: Owners/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -158,7 +171,9 @@ namespace MyLeasing.Web.Controllers
             return View(owner);
         }
 
+
         // POST: Owners/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -167,6 +182,7 @@ namespace MyLeasing.Web.Controllers
             await _ownerRepository.DeleteAsync(owner);
             return RedirectToAction(nameof(Index));
         }
+
 
         private async Task<bool> OwnerExists(int id)
         {

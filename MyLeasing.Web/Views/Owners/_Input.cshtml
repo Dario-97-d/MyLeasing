@@ -17,9 +17,41 @@
 </div>
 <div class="form-group">
     <label asp-for="PhotoFile" class="control-label"></label>
-    <input asp-for="PhotoFile" class="form-control" type="file" />
+    <input type="file" asp-for="PhotoFile"
+           id="input-file-image" class="form-control" onchange="showPreview(event);" />
     <span asp-validation-for="PhotoFile" class="text-danger"></span>
 </div>
+<script>
+    const showPreview = event => {
+        const divImageFile = document.getElementById("input-file-image");
+        const divId = "div-img-preview";
+        const divImagePreview = document.getElementById(divId) ??
+            createElmAfter("div", divId, divImageFile.parentElement);
+
+        divImagePreview.style.padding = "0px 12px 16px";
+
+        const imgPreviewId = "img-preview";
+        const imgPreview = document.getElementById(imgPreviewId) ??
+            createElmAfter("img", imgPreviewId, divImagePreview);
+
+        divImagePreview.append(imgPreview);
+
+        imgPreview.style.maxWidth = "128px";
+        imgPreview.style.maxHeight = "128px";
+
+        const imageFile = event.target.files[0];
+        imgPreview.src = URL.createObjectURL(imageFile);
+
+        return;
+
+        function createElmAfter(elmType, elmId, priorElm) {
+            const elm = document.createElement(elmType);
+            elm.id = elmId;
+            priorElm.after(elm);
+            return elm;
+        }
+    }
+</script>
 <div class="form-group">
     <label asp-for="FixedPhone" class="control-label"></label>
     <input asp-for="FixedPhone" class="form-control" />

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using MyLeasing.Web.Data.Entities;
+using MyLeasing.Web.Models;
 
 namespace MyLeasing.Web.Helpers
 {
@@ -8,5 +9,7 @@ namespace MyLeasing.Web.Helpers
     {
         Task<IdentityResult> AddUserAsync(User user, string password);
         Task<User> GetUserByEmailAsync(string email);
+        Task<SignInResult> LoginAsync(LoginViewModel model);
+        Task LogoutAsync();
     }
 }

@@ -164,7 +164,7 @@ namespace MyLeasing.Web.Data
             if (_defaultUser == null)
             {
                 _defaultUser = DefineDefaultUser();
-                var password = "password";
+                var password = _defaultUserEmail;
 
                 var result = await _userHelper.AddUserAsync(_defaultUser, password);
 

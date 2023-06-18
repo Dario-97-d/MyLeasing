@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,11 +32,13 @@ namespace MyLeasing.Web.Controllers
             _userHelper = userHelper;
         }
 
+
         // GET: Lessees
         public IActionResult Index()
         {
             return View(_lesseeRepository.GetAll());
         }
+
 
         // GET: Lessees/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -51,15 +54,19 @@ namespace MyLeasing.Web.Controllers
             return View(lessee);
         }
 
+
         // GET: Lessees/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
+
         // POST: Lessees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(LesseeViewModel lesseeViewModel)
@@ -75,7 +82,9 @@ namespace MyLeasing.Web.Controllers
             return View(lesseeViewModel);
         }
 
+
         // GET: Lessees/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -94,9 +103,11 @@ namespace MyLeasing.Web.Controllers
             return View(lesseeViewModel);
         }
 
+
         // POST: Lessees/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(LesseeViewModel lesseeViewModel)
@@ -130,7 +141,9 @@ namespace MyLeasing.Web.Controllers
             return View(lesseeViewModel);
         }
 
+
         // GET: Lessees/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,7 +160,9 @@ namespace MyLeasing.Web.Controllers
             return View(lessee);
         }
 
+
         // POST: Lessees/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Lessee entity)
@@ -156,6 +171,7 @@ namespace MyLeasing.Web.Controllers
             await _lesseeRepository.DeleteAsync(entity);
             return RedirectToAction(nameof(Index));
         }
+
 
         private async Task<bool> LesseeExistsAsync(int id)
         {
