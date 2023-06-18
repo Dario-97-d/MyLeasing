@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Helpers;
@@ -16,14 +17,87 @@ namespace MyLeasing.Web.Controllers
         }
 
 
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            if (!User.Identity.IsAuthenticated)
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+            if (user == null)
             {
-                return Login();
+                return View();
             }
 
-            return RedirectToHomePage();
+            ViewBag.UserMessage = TempData["UserMessage"];
+
+            var model = new UserAccountViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Document = user.Document,
+                Address = user.Address
+            };
+
+            return View(model);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUser(UserAccountViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                if (user != null)
+                {
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+                    user.Document = model.Document;
+                    user.Address = model.Address;
+                };
+
+                var updateUser = await _userHelper.UpdateUserAsync(user);
+
+                if (updateUser.Succeeded)
+                {
+                    TempData["UserMessage"] = "Sucessfully updated.";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Could not update user.");
+            return View("Index");
+        }
+
+
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                if (user != null)
+                {
+                    var changePassword = await _userHelper.ChangePasswordAsync(
+                        user, model.OldPassword, model.NewPassword);
+
+                    if (changePassword.Succeeded)
+                    {
+                        TempData["UserMessage"] = "Sucessfully updated password.";
+                        return RedirectToAction(nameof(Index), model);
+                    }
+                }
+            }
+
+            ModelState.AddModelError(string.Empty, "Could not update password.");
+            return View();
         }
 
 
@@ -38,8 +112,8 @@ namespace MyLeasing.Web.Controllers
         }
 
 
-        [HttpPost, ActionName("Login")]
-        public async Task<IActionResult> LoginAsync(LoginViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -68,8 +142,7 @@ namespace MyLeasing.Web.Controllers
         }
 
 
-        [ActionName("Logout")]
-        public async Task<IActionResult> LogoutAsync()
+        public async Task<IActionResult> Logout()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -91,8 +164,8 @@ namespace MyLeasing.Web.Controllers
         }
 
 
-        [HttpPost, ActionName("Register")]
-        public async Task<IActionResult> RegisterAsync(RegisterNewUserViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -114,9 +187,10 @@ namespace MyLeasing.Web.Controllers
                     Email = model.Username,
                     Document = model.Document,
                     FirstName = model.FirstName,
-                    LastName = model.LastName
+                    LastName = model.LastName,
+                    Address = model.Address
                 };
-                
+
                 var register = await _userHelper.AddUserAsync(user, model.Password);
 
                 if (register.Succeeded)
@@ -127,7 +201,7 @@ namespace MyLeasing.Web.Controllers
                         Password = model.Password,
                         RememberMe = false
                     };
-                    return await LoginAsync(loginViewModel);
+                    return await Login(loginViewModel);
                 }
             }
 

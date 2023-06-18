@@ -8,9 +8,10 @@ namespace MyLeasing.Web.Helpers
     public interface IUserHelper
     {
         Task<IdentityResult> AddUserAsync(User user, string password);
+        Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
         Task<User> GetUserByEmailAsync(string email);
         Task<SignInResult> LoginAsync(LoginViewModel model);
         Task LogoutAsync();
-        Task<IdentityResult> RegisterNewUser(RegisterNewUserViewModel model);
+        Task<IdentityResult> UpdateUserAsync(User user);
     }
 }

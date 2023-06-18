@@ -183,8 +183,7 @@ namespace MyLeasing.Web.Controllers
         {
             Guid photoId = await SavePhotoFileAsync(lesseeViewModel.PhotoFile);
 
-            // TODO: Update user -> logged user
-            var user = await _userHelper.GetUserByEmailAsync("dario@e.mail");
+            var user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
             return new Lessee(lesseeViewModel)
             {

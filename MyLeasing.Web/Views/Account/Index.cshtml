@@ -1,7 +1,6 @@
-﻿@model MyLeasing.Web.Models.RegisterNewUserViewModel
-
+﻿@model MyLeasing.Web.Models.UserAccountViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Account details";
 }
 
 <h2>Register</h2>
@@ -40,32 +39,14 @@
                 <span asp-validation-for="Address" class="text-danger"></span>
             </div>
 
-            <!-- Username -->
+
+            <!-- Update __ Change password -->
             <div class="form-group">
-                <label asp-for="Username">Username</label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+                <input type="submit" asp-action="UpdateUser" value="Update" class="btn btn-primary" />
+                <a asp-action="ChangePassword" class="btn btn-success">Change password</a>
             </div>
 
-            <!-- Password -->
-            <div class="form-group">
-                <label asp-for="Password">Password</label>
-                <input asp-for="Password" type="password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="form-group">
-                <label asp-for="ConfirmPassword">@Html.DisplayNameFor(model => model.ConfirmPassword)</label>
-                <input asp-for="ConfirmPassword" type="password" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-
-
-            <!-- Register Button -->
-            <div class="form-group">
-                <input type="submit" value="Register New User" class="btn btn-primary" />
-            </div>
+            <div class="text-success">@ViewBag.UserMessage</div>
         </form>
     </div>
 </div>

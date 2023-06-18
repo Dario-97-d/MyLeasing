@@ -2,7 +2,7 @@
 
 namespace MyLeasing.Web.Models
 {
-    public class RegisterNewUserViewModel
+    public class UserAccountViewModel
     {
         [Display(Name = "Document")]
         [MaxLength(20, ErrorMessage = "The {0} field can not have more than {1} characters.")]
@@ -24,21 +24,5 @@ namespace MyLeasing.Web.Models
 
         [MaxLength(100, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         public string Address { get; set; }
-
-
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Username")]
-        public string Username { get; set; }
-
-
-        [Required]
-        [MinLength(8)]
-        public string Password { get; set; }
-
-
-        [Compare("Password")]
-        [Display(Name = "Confirm password")]
-        public string ConfirmPassword { get; set; }
     }
 }

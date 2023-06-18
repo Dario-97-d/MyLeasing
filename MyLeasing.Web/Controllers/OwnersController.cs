@@ -21,9 +21,6 @@ namespace MyLeasing.Web.Controllers
         readonly IBlobHelper _blobHelper;
         readonly IUserHelper _userHelper;
 
-        // Temporary for checks before login is implemented
-        readonly string _defaultUserEmail = Data.Entities.User.DefaultEmail;
-
         public OwnersController(IOwnerRepository ownerRepository,
             IBlobHelper blobHelper, IUserHelper userHelper)
         {
@@ -82,8 +79,7 @@ namespace MyLeasing.Web.Controllers
                 var owner = OwnerViewModel.ToOwner(ownerViewModel);
                 owner.PhotoId = guid;
 
-                // TODO: Change to logged in User, when User login is implemented
-                owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
+                owner.User = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
                 await _ownerRepository.CreateAsync(owner);
 
@@ -132,7 +128,7 @@ namespace MyLeasing.Web.Controllers
                     owner.PhotoId = guid;
 
                     // TODO: Mudar para que o User seja o logado, quando o login estiver implementado
-                    owner.User = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
+                    owner.User = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
 
                     await _ownerRepository.UpdateAsync(owner);
                 }
