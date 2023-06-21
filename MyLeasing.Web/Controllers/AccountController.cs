@@ -195,6 +195,8 @@ namespace MyLeasing.Web.Controllers
 
                 if (register.Succeeded)
                 {
+                    await _userHelper.AddUserToRoleAsync(user, "Standard");
+
                     var loginViewModel = new LoginViewModel
                     {
                         Username = model.Username,

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Helpers;
 
@@ -23,23 +25,49 @@ namespace MyLeasing.Web.Data
 
 
         /// <summary>
-        /// Seeds database tables, if empty.
+        /// Seeds each database table if empty.
         /// </summary>
         public async Task SeedAsync()
         {
-            bool changes;
-
             // Ensure Database is Created
             await _context.Database.EnsureCreatedAsync();
 
-            // Seed Entity for which there ain't any registries
-            changes = await SeedUser() | SeedOwners() | SeedLessees();
+            // Seed items
+
+            await SeedRolesAsync();
+            await SeedUserAsync();
+            SeedOwners();
+            SeedLessees();
 
             // Save changes to database, if there are any
-            if (changes) await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
 
+        /// <summary>
+        /// Calls UserHelper to create User and add it to Role.
+        /// </summary>
+        /// <param name="user">User</param>
+        /// <param name="password">Password for User.</param>
+        /// <param name="roleName">Name of the Role to add User to.</param>
+        /// <exception cref="Exception">Could not add User.</exception>
+        async Task AddUserWithRoleAsync(User user, string password, string roleName)
+        {
+            var result = await _userHelper.AddUserAsync(_defaultUser, password);
+
+            if (!result.Succeeded)
+                throw new Exception(
+                    $"Could not add {nameof(User)} at " +
+                    $"{nameof(SeedDb)}.{nameof(AddUserWithRoleAsync)}().");
+
+            await _userHelper.AddUserToRoleAsync(_defaultUser, roleName);
+        }
+
+
+        /// <summary>
+        /// Defines a default User to seed in database.
+        /// </summary>
+        /// <returns>Default User.</returns>
         User DefineDefaultUser()
         {
             return new User()
@@ -53,6 +81,10 @@ namespace MyLeasing.Web.Data
             };
         }
 
+        /// <summary>
+        /// Defines five Lessees to seed in database.
+        /// </summary>
+        /// <returns>Array of Lessees.</returns>
         Lessee[] DefineFiveLessees()
         {
             Lessee[] lessees = new Lessee[5];
@@ -68,7 +100,7 @@ namespace MyLeasing.Web.Data
 
             _defaultUser ??= DefineDefaultUser();
 
-            for (int i = 0; i< 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 lessees[i] = new Lessee()
                 {
@@ -128,53 +160,77 @@ namespace MyLeasing.Web.Data
             return owners;
         }
 
-        bool SeedLessees()
+
+        /// <summary>
+        /// Seeds Lessees in Data Context if there aren't any yet.
+        /// </summary>
+        /// <returns>true if any change was made; otherwise, false.</returns>
+        void SeedLessees()
         {
-            // Seed only if there aren't any Lessees yet
+            // Check any Lessee exists
             if (_context.Lessees.Any())
-                return false;
+                return;
 
             // Define and add lessees
             Lessee[] lessees = DefineFiveLessees();
             _context.Lessees.AddRange(lessees);
-
-            return true;
         }
 
         /// <summary>
         /// Seeds Owners in database, if there aren't any yet.
         /// </summary>
         /// <returns>true if seeding has been done; otherwise, false.</returns>
-        bool SeedOwners()
+        void SeedOwners()
         {
             // Seed only if there aren't any Owners yet
             if (_context.Owners.Any())
-                return false;
+                return;
 
             // Define and add owners
             Owner[] owners = DefineTenOwners();
             _context.Owners.AddRange(owners);
-
-            return true;
         }
 
-        async Task<bool> SeedUser()
+        /// <summary>
+        /// Seeds Roles in database if the default ones don't exist yet.
+        /// </summary>
+        /// <returns>true if any change was made; otherwise, false.</returns>
+        async Task SeedRolesAsync()
         {
+            string[] roles = { "Admin", "Owner", "Lessee", "Standard" };
+
+            foreach (string role in roles)
+            {
+                await _userHelper.EnsureRoleExistsAsync(role);
+            }
+        }
+
+        /// <summary>
+        /// Seeds User in database if the default one doesn't exist.
+        /// </summary>
+        /// <returns>true if any change was made; otherwise, false.</returns>
+        async Task SeedUserAsync()
+        {
+            // Check user exists
             _defaultUser = await _userHelper.GetUserByEmailAsync(_defaultUserEmail);
+
+            // If not
             if (_defaultUser == null)
             {
                 _defaultUser = DefineDefaultUser();
-                var password = _defaultUserEmail;
+                string password = _defaultUserEmail;
 
-                var result = await _userHelper.AddUserAsync(_defaultUser, password);
+                await AddUserWithRoleAsync(_defaultUser, password, "Admin");
 
-                if (!result.Succeeded)
-                    throw new Exception("Could not create User at SeedDb.SeedUser().");
-
-                return result.Succeeded;
+                return;
             }
 
-            return false;
+            // Else
+
+            if (!await _userHelper.IsUserInRoleAsync(_defaultUser, "Admin"))
+            {
+                await _userHelper.AddUserToRoleAsync(_defaultUser, "Admin");
+            }
         }
 
     }

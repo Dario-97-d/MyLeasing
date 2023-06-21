@@ -57,7 +57,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // GET: Owners/Create
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -67,7 +67,7 @@ namespace MyLeasing.Web.Controllers
         // POST: Owners/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(OwnerViewModel ownerViewModel)
@@ -150,7 +150,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // GET: Owners/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -169,7 +169,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // POST: Owners/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -179,6 +179,8 @@ namespace MyLeasing.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        #region Non-Action methods
 
         private async Task<bool> OwnerExists(int id)
         {
@@ -192,5 +194,7 @@ namespace MyLeasing.Web.Controllers
 
             return await _blobHelper.UploadBlobAsync(photoFile, "owners");
         }
+
+        #endregion
     }
 }

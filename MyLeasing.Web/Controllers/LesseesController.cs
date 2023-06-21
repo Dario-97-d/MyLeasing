@@ -56,7 +56,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // GET: Lessees/Create
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -66,7 +66,7 @@ namespace MyLeasing.Web.Controllers
         // POST: Lessees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(LesseeViewModel lesseeViewModel)
@@ -143,7 +143,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // GET: Lessees/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -162,7 +162,7 @@ namespace MyLeasing.Web.Controllers
 
 
         // POST: Lessees/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Lessee entity)
@@ -173,11 +173,12 @@ namespace MyLeasing.Web.Controllers
         }
 
 
+        #region Non-Action methods
+
         private async Task<bool> LesseeExistsAsync(int id)
         {
             return await _lesseeRepository.ExistsAsync(id);
         }
-
 
         async Task<Lessee> PrepareForCreateOrEdit(LesseeViewModel lesseeViewModel)
         {
@@ -199,5 +200,7 @@ namespace MyLeasing.Web.Controllers
 
             return await _blobHelper.UploadBlobAsync(imageFile, "lessees");
         }
+
+        #endregion
     }
 }
