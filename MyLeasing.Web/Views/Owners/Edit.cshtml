@@ -4,8 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
+<h2>Edit</h2>
 <h4>Owner</h4>
 <hr />
 <div class="row">
@@ -18,13 +17,13 @@
             <partial name="_Input" />
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Save</button>
             </div>
         </form>
     </div>
 
     <div class="col-md-6">
-        <img src="@Url.Content(Model.PhotoFullPath)" alt="Photo" style="max-width:256px;max-height:256px;">
+        <img src="@Url.Content(Model.PhotoFullPath)" alt="Photo" style="max-width:128px;max-height:128px;">
     </div>
 </div>
 

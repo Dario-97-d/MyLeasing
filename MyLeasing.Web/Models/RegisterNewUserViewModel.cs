@@ -10,13 +10,13 @@ namespace MyLeasing.Web.Models
         public string Document { get; set; }
 
 
-        [Display(Name = "First Name")]
+        [Display(Name = "First name")]
         [MaxLength(50, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string FirstName { get; set; }
 
 
-        [Display(Name = "Last Name")]
+        [Display(Name = "Last name")]
         [MaxLength(50, ErrorMessage = "The {0} field can not have more than {1} characters.")]
         [Required(ErrorMessage = "The field {0} is mandatory.")]
         public string LastName { get; set; }
@@ -28,7 +28,6 @@ namespace MyLeasing.Web.Models
 
         [Required]
         [DataType(DataType.EmailAddress)]
-        [Display(Name = "Username")]
         public string Username { get; set; }
 
 
