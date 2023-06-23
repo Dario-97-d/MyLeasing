@@ -24,7 +24,7 @@ namespace MyLeasing.Web.Data.Entities
         [DisplayName("Last Name*")]
         public string LastName { get; set; }
 
-        [DisplayName("Owner Name")]
+        [DisplayName("Full name")]
         public string OwnerName => $"{FirstName} {LastName}";
 
         [MaxLength(15)]

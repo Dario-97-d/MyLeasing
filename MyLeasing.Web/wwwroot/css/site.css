@@ -69,3 +69,356 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+
+/*
+    Error 403 - Forbidden
+*/
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Nova+Mono');
+
+:root {
+    --font-header: 'Nova Mono', monospace;
+    --color-theme: #282B24;
+    --animation-sentence: 'You know you\'re not supposed to be here, right?';
+}
+
+.container-error-403 {
+    text-align: center;
+    margin: 1rem;/* 0.5rem 0;*/
+}
+
+.container-error-403 h1-error-403 {
+    font-family: var(--font-header);
+    font-size: calc(4rem + 2vw);
+    text-transform: uppercase;
+}
+
+.container-error-403 p-error-403 {
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    font-size: 2rem;
+    margin: 1.5rem;/* 0 3rem;*/
+}
+
+.ghost-error-403 {
+    position: absolute;
+    top: 50%;
+    left: calc(50% - 75px);
+    width: 200px;
+    height: 200px;
+    /* have the ghost move to the right and to the left of the screen, turning to its central position and repeating the animation */
+    animation: hoverGhost 20s ease-in-out infinite;
+}
+    /* introduce text through a pseudo element, connected to the animated div */
+    .ghost-error-403:before {
+        content: var(--animation-sentence);
+        color: var(--color-theme);
+        position: absolute;
+        bottom: 100%;
+        text-align: center;
+        line-height: 2;
+        padding: 1rem;
+        opacity: 1;
+    }
+
+/* define the keyframe animations
+- hoverghost to have the ghost move right, left and then back to its default position
+ */
+@keyframes hoverGhost {
+    25% {
+        transform: translateX(16vw);
+    }
+
+    75% {
+        transform: translateX(-16vw);
+    }
+}
+
+
+/*
+    Error404
+*/
+@import url('https://fonts.googleapis.com/css?family=Abril+Fatface|Lato');
+/*
+$white: #EDEDED;
+$gray: #BFC0C0;
+$dark: #585959;
+$light: #D3DEEA;
+
+$big: 'Abril Fatface', serif;
+$body: 'Lato', sans-serif;
+*/
+.top-error-404 {
+    margin-top: 30px;
+}
+
+.container-error-404 {
+    margin: 0 auto;
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin-top: -40px;
+}
+
+.ghost-error-404 {
+    width: 50%;
+    height: 53%;
+    left: 25%;
+    top: 10%;
+    position: absolute;
+    border-radius: 50% 50% 0 0;
+    background: #EDEDED;
+    border: 1px solid #BFC0C0;
+    border-bottom: none;
+    animation: float 2s ease-out infinite;
+}
+
+.ghost-copy-error-404 {
+    width: 50%;
+    height: 53%;
+    left: 25%;
+    top: 10%;
+    position: absolute;
+    border-radius: 50% 50% 0 0;
+    background: #EDEDED;
+    border: 1px solid #BFC0C0;
+    border-bottom: none;
+    animation: float 2s ease-out infinite;
+    z-index: 0;
+}
+
+.face-error-404 {
+    position: absolute;
+    width: 100%;
+    height: 60%;
+    top: 20%;
+}
+
+.eye-error-404, .eye-right-error-404 {
+    position: absolute;
+    background: #585959;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    top: 40%;
+}
+
+.eye-error-404 {
+    left: 25%;
+}
+
+.eye-right-error-404 {
+    right: 25%;
+}
+
+.mouth-error-404 {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+    width: 10px;
+    height: 10px;
+    border: 3px solid;
+    border-radius: 50%;
+    border-color: transparent #585959 #585959 transparent;
+    transform: rotate(45deg);
+}
+
+.one-error-404, .two-error-404, .three-error-404, .four-error-404 {
+    position: absolute;
+    background: #EDEDED;
+    top: 85%;
+    width: 25%;
+    height: 23%;
+    border: 1px solid #BFC0C0;
+    z-index: 0;
+}
+
+.one-error-404 {
+    border-radius: 0 0 100% 30%;
+    left: -1px;
+}
+
+.two-error-404 {
+    left: 23%;
+    border-radius: 0 0 50% 50%;
+}
+
+.three-error-404 {
+    left: 50%;
+    border-radius: 0 0 50% 50%;
+}
+
+.four-error-404 {
+    left: 74.5%;
+    border-radius: 0 0 30% 100%;
+}
+
+.shadow-error-404 {
+    position: absolute;
+    width: 30%;
+    height: 7%;
+    background: #BFC0C0;
+    left: 35%;
+    top: 80%;
+    border-radius: 50%;
+    animation: scale 2s infinite;
+}
+
+@keyframes scale {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+    50% {
+        transform: translateY(15px);
+    }
+}
+
+.bottom-error-404 {
+    margin-top: 10px;
+}
+
+/*text styling*/
+.h1-error-404 {
+    font-family: 'Abril Fatface', serif;
+    color: #EDEDED;
+    text-align: center;
+    font-size: 9em;
+    margin: 0;
+    text-shadow: -1px 0 #BFC0C0, 0 1px #BFC0C0, 1px 0 #BFC0C0, 0 -1px #BFC0C0;
+}
+
+.h3-error-404 {
+    font-family: 'Lato', sans-serif;
+    font-size: 2em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #BFC0C0;
+    margin-top: -20px;
+    font-weight: 900;
+}
+
+.p-error-404 {
+    text-align: center;
+    font-family: 'Lato', sans-serif;
+    color: #585959;
+    font-size: .6em;
+    margin-top: -20px;
+    text-transform: uppercase;
+}
+
+.search-error-404 {
+    text-align: center;
+}
+
+.buttons-error-404 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/*search style*/
+
+.search-bar-error-404 {
+    border: 1px solid #BFC0C0;
+    padding: 5px;
+    height: 20px;
+    margin-left: -30px;
+    width: 200px;
+    outline: none;
+    &:focus
+
+{
+    border: 1px solid #D3DEEA;
+}
+
+}
+
+.search-btn-error-404 {
+    position: absolute;
+    width: 30px;
+    height: 32px;
+    border: 1px solid #BFC0C0;
+    background: #BFC0C0;
+    text-align: center;
+    color: #EDEDED;
+    cursor: pointer;
+    font-size: 1em;
+    outline: none;
+    &:hover
+
+{
+    background: #EDEDED;
+    border: 1px solid #EDEDED;
+    color: #BFC0C0;
+    transition: all .2s ease;
+}
+
+}
+
+
+.btn-error-404 {
+    background: #EDEDED;
+    margin: 4px;
+    /*
+    padding: 15px 20px;
+    margin: 5px;
+    color: #585959;
+    font-family: 'Lato', sans-serif;
+    text-transform: uppercase;
+    font-size: .6em;
+    letter-spacing: 1px;
+    border: 0;
+        */
+    &:hover
+        
+
+{
+    background: #BFC0C0;
+    transition: all .4s ease-out;
+}
+        
+}
+    
+    .buttons-error-404 .btn-error-404 {
+    background-color: ;
+}
+.footer-error-404 {
+    /*
+    position: absolute;
+    bottom: 0;
+    right: 0;
+        */
+    text-align: center;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    padding: 10px;
+    margin-top: 16px;
+    color: #EA7996;
+    letter-spacing: 3px;
+    font-family: 'Lato', sans-serif;
+    a
+
+{
+    color: #ffffff;
+    text-decoration: none;
+    &:hover
+
+{
+    color: #7d7d7d;
+}
+
+}
+}

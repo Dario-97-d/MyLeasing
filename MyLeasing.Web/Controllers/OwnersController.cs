@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -43,13 +44,13 @@ namespace MyLeasing.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             return View(owner);
@@ -95,13 +96,13 @@ namespace MyLeasing.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             var ownerViewModel = Owner.ToOwnerViewModel(owner);
@@ -134,9 +135,9 @@ namespace MyLeasing.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await OwnerExists(ownerViewModel.Id))
+                    if (!await _ownerRepository.ExistsAsync(ownerViewModel.Id))
                     {
-                        return NotFound();
+                        return OwnerNotFound();
                     }
                     else
                     {
@@ -155,13 +156,13 @@ namespace MyLeasing.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             var owner = await _ownerRepository.GetByIdAsync(id.Value);
             if (owner == null)
             {
-                return NotFound();
+                return OwnerNotFound();
             }
 
             return View(owner);
@@ -182,17 +183,18 @@ namespace MyLeasing.Web.Controllers
 
         #region Non-Action methods
 
-        private async Task<bool> OwnerExists(int id)
-        {
-            return await _ownerRepository.ExistsAsync(id);
-        }
-
         async Task<Guid> SavePhotoFileAsync(IFormFile photoFile)
         {
             if (photoFile == null || photoFile.Length < 1)
                 return Guid.Empty;
 
             return await _blobHelper.UploadBlobAsync(photoFile, "owners");
+        }
+
+        ViewResult OwnerNotFound()
+        {
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return View("ObjectNotFound", new ObjectNotFoundViewModel(nameof(Owner)));
         }
 
         #endregion

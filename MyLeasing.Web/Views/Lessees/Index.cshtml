@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<MyLeasing.Web.Data.Entities.Lessee>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lessees";
 }
 
-<h1>Index</h1>
+<h1>Lessees</h1>
 
 <p>
     <a asp-action="Create">New Lessee</a>
@@ -16,10 +16,7 @@
                 @Html.DisplayNameFor(model => model.Document)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th>
                 Photo
@@ -43,10 +40,7 @@
                 @Html.DisplayFor(modelItem => item.Document)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                @Html.DisplayFor(modelItem => item.FullName)
             </td>
             <td>
                 <img src="@Html.DisplayFor(modelItem => item.PhotoFullPath)" alt="Pic" style="max-width:32px;max-height:32px;">

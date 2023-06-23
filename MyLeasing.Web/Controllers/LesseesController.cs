@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -44,12 +45,12 @@ namespace MyLeasing.Web.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-                return NotFound();
+                return LesseeNotFound();
 
             var lessee = await _lesseeRepository.GetByIdAsync(id.Value);
 
             if (lessee == null)
-                return NotFound();
+                return LesseeNotFound();
 
             return View(lessee);
         }
@@ -89,13 +90,13 @@ namespace MyLeasing.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return LesseeNotFound();
             }
 
             var lessee = await _lesseeRepository.GetByIdAsync(id.Value);
             if (lessee == null)
             {
-                return NotFound();
+                return LesseeNotFound();
             }
 
             var lesseeViewModel = _converterHelper.ToLesseeViewModel(lessee);
@@ -127,9 +128,9 @@ namespace MyLeasing.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await LesseeExistsAsync(lesseeViewModel.Id))
+                    if (!await _lesseeRepository.ExistsAsync(lesseeViewModel.Id))
                     {
-                        return NotFound();
+                        return LesseeNotFound();
                     }
                     else
                     {
@@ -148,13 +149,13 @@ namespace MyLeasing.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return LesseeNotFound();
             }
 
             var lessee = await _lesseeRepository.GetByIdAsync(id.Value);
             if (lessee == null)
             {
-                return NotFound();
+                return LesseeNotFound();
             }
 
             return View(lessee);
@@ -175,9 +176,10 @@ namespace MyLeasing.Web.Controllers
 
         #region Non-Action methods
 
-        private async Task<bool> LesseeExistsAsync(int id)
+        ViewResult LesseeNotFound()
         {
-            return await _lesseeRepository.ExistsAsync(id);
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return View("ObjectNotFound", new ObjectNotFoundViewModel(nameof(Lessee)));
         }
 
         async Task<Lessee> PrepareForCreateOrEdit(LesseeViewModel lesseeViewModel)

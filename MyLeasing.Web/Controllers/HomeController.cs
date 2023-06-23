@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MyLeasing.Web.Models;
@@ -33,6 +34,19 @@ namespace MyLeasing.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult NotAuthorized()
+        {
+            Response.StatusCode = (int)HttpStatusCode.Forbidden;
+            return View();
+        }
+
+        [Route("/Error/404")]
+        public IActionResult Error404()
+        {
+            Response.StatusCode = (int)HttpStatusCode.NotFound;
+            return View();
         }
     }
 }

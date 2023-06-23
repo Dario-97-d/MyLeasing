@@ -9,11 +9,6 @@ using MyLeasing.Web.Data;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Data.Repository;
 using MyLeasing.Web.Helpers;
-using System;
-using Microsoft.Extensions.Azure;
-using Azure.Storage.Queues;
-using Azure.Storage.Blobs;
-using Azure.Core.Extensions;
 
 namespace MyLeasing.Web
 {
@@ -50,6 +45,11 @@ namespace MyLeasing.Web
             services.AddScoped<IOwnerRepository, OwnerRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Home/NotAuthorized";
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -66,6 +66,9 @@ namespace MyLeasing.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
